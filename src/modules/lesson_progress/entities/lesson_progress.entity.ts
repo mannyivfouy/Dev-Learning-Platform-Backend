@@ -2,9 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Student } from '../../students/entities/student.entity.js';
+import { Lesson } from '../../lessons/entities/lesson.entity.js';
 
 @Entity('lesson_progress')
 export class LessonProgress {
@@ -28,4 +32,14 @@ export class LessonProgress {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(() => Student, (student) => student.lesson_progress)
+  @JoinColumn({ name: 'student_id' })
+  student: Student;
+
+  @ManyToOne(() => Lesson, (lesson) => lesson.lesson_progress, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'lesson_id' })
+  lesson: Lesson;
 }

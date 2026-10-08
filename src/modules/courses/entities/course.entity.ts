@@ -2,14 +2,23 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Category } from '../../categories/entities/category.entity.js';
+import { Lesson } from '../../lessons/entities/lesson.entity.js';
+import { Enrollment } from '../../enrollments/entities/enrollment.entity.js';
 
 @Entity('courses')
 export class Course {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  category_id: string | null;
 
   @Column({ type: 'varchar', length: 100 })
   title: string;
@@ -38,4 +47,16 @@ export class Course {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(() => Category, (category) => category.courses, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'category_id' })
+  category: Category;
+
+  @OneToMany(() => Lesson, (lesson) => lesson.course)
+  lessons: Lesson[];
+
+  @OneToMany(() => Enrollment, (enrollment) => enrollment.course)
+  enrollments: Enrollment[];
 }

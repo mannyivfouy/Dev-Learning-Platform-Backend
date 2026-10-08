@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Subscription } from '../../subscriptions/entities/subscription.entity.js';
 
 @Entity('plans')
 export class Plan {
@@ -41,4 +43,7 @@ export class Plan {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => Subscription, (subscription) => subscription.plan)
+  subscriptions: Subscription[];
 }

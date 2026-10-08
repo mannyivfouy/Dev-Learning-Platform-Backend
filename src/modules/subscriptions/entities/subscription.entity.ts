@@ -2,9 +2,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Student } from '../../students/entities/student.entity.js';
+import { Plan } from '../../plans/entities/plan.entity.js';
+import { Payment } from '../../payments/entities/payment.entity.js';
 
 @Entity('subscriptions')
 export class Subscription {
@@ -50,4 +56,15 @@ export class Subscription {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(() => Student, (student) => student.subscriptions)
+  @JoinColumn({ name: 'student_id' })
+  student: Student;
+
+  @ManyToOne(() => Plan, (plan) => plan.subscriptions)
+  @JoinColumn({ name: 'plan_id' })
+  plan: Plan;
+
+  @OneToMany(() => Payment, (payment) => payment.subscription)
+  payments: Payment[];
 }

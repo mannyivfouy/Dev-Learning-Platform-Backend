@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Course } from '../../courses/entities/course.entity.js';
 
 @Entity('categories')
 export class Category {
@@ -22,4 +24,7 @@ export class Category {
 
   @UpdateDateColumn()
   updated: Date;
+
+  @OneToMany(() => Course, (course) => course.category)
+  courses: Course[]
 }
