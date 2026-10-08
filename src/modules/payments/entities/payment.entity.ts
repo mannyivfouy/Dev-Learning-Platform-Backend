@@ -1,0 +1,53 @@
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+
+@Entity('payments')
+export class Payment {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'uuid' })
+  student_id: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  subscription_id: string | null;
+
+  @Column({ type: 'uuid', nullable: true })
+  enrollment_id: string | null;
+
+  @Column({
+    type: 'enum',
+    enum: ['stripe', 'paypal', 'bakong'],
+  })
+  provider: 'stripe' | 'paypal' | 'bakong';
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  transaction_id: string | null;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  amount: number;
+
+  @Column({ type: 'varchar', length: 3, default: 'USD' })
+  currency: string;
+
+  @Column({
+    type: 'enum',
+    enum: ['pending', 'paid', 'failed', 'cancelled', 'refunded'],
+    default: 'pending',
+  })
+  status: 'pending' | 'paid' | 'failed' | 'cancelled' | 'refunded';
+
+  @Column({ type: 'timestamp', nullable: true })
+  paid_at: Date | null;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+}
