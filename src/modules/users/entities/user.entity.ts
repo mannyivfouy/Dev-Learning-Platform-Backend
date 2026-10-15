@@ -44,7 +44,11 @@ export class User {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Role, (role) => role.users)
+  // @ManyToOne(() => Role, (role) => role.users)
+  // @JoinColumn({ name: 'role_id' })
+  // role: Role;
+
+  @ManyToOne(() => Role)
   @JoinColumn({ name: 'role_id' })
   role: Role;
 }

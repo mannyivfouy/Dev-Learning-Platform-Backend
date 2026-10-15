@@ -15,6 +15,7 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
 import { PaymentsModule } from './modules/payments/payments.module.js';
 import appConfig from './config/app.config.js';
 import databaseConfig from './config/database.config.js';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -22,17 +23,20 @@ import databaseConfig from './config/database.config.js';
       isGlobal: true,
       load: [appConfig, databaseConfig]
     }),
-    RolesModule,
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: databaseConfig().database.host,
+      port: databaseConfig().database.port,
+      username: databaseConfig().database.username,
+      password: databaseConfig().database.password,
+      database: databaseConfig().database.name,
+
+      autoLoadEntities: true,
+
+      synchronize: false,
+    }),
     UsersModule,
-    StudentsModule,
-    CategoriesModule,
-    CoursesModule,
-    LessonsModule,
-    EnrollmentsModule,
-    LessonProgressModule,
-    PlansModule,
-    SubscriptionsModule,
-    PaymentsModule
+    RolesModule
   ],
   controllers: [AppController],
   providers: [AppService],
