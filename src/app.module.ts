@@ -36,7 +36,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: false,
     }),
     UsersModule,
-    RolesModule
+    RolesModule,
+    StudentsModule
   ],
   controllers: [AppController],
   providers: [AppService],

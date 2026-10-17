@@ -56,7 +56,7 @@ export class Payment {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Student, (student) => student.payments)
+  @ManyToOne(() => Student)
   @JoinColumn({ name: 'student_id' })
   student: Student;
 

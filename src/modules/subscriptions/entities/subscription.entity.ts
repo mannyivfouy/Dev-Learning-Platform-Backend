@@ -57,7 +57,7 @@ export class Subscription {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Student, (student) => student.subscriptions)
+  @ManyToOne(() => Student)
   @JoinColumn({ name: 'student_id' })
   student: Student;
 

@@ -33,7 +33,7 @@ export class LessonProgress {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Student, (student) => student.lesson_progress)
+  @ManyToOne(() => Student)
   @JoinColumn({ name: 'student_id' })
   student: Student;
 
