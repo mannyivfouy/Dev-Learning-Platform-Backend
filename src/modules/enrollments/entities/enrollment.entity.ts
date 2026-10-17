@@ -49,10 +49,7 @@ export class Enrollment {
   @JoinColumn({ name: 'student_id' })
   student: Student;
 
-  @ManyToOne(() => Course, (course) => course.enrollments)
+  @ManyToOne(() => Course)
   @JoinColumn({ name: 'course_id' })
   course: Course;
-
-  @OneToMany(() => Payment, (payment) => payment.enrollment)
-  payments: Payment[];
 }

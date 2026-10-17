@@ -60,11 +60,11 @@ export class Payment {
   @JoinColumn({ name: 'student_id' })
   student: Student;
 
-  @ManyToOne(() => Subscription, (subscription) => subscription.payments)
+  @ManyToOne(() => Subscription)
   @JoinColumn({ name: 'subscription_id' })
   subscription: Subscription;
 
-  @ManyToOne(() => Enrollment, (enrollment) => enrollment.payments)
+  @ManyToOne(() => Enrollment)
   @JoinColumn({ name: 'enrollment_id' })
   enrollment: Enrollment;
 }

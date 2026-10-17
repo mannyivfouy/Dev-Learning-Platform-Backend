@@ -37,7 +37,7 @@ export class LessonProgress {
   @JoinColumn({ name: 'student_id' })
   student: Student;
 
-  @ManyToOne(() => Lesson, (lesson) => lesson.lesson_progress, {
+  @ManyToOne(() => Lesson, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'lesson_id' })
