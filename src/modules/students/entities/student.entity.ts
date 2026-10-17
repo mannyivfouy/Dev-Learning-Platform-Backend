@@ -2,14 +2,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Enrollment } from '../../enrollments/entities/enrollment.entity.js';
-import { LessonProgress } from '../../lesson_progress/entities/lesson_progress.entity.js';
-import { Subscription } from '../../subscriptions/entities/subscription.entity.js';
-import { Payment } from '../../payments/entities/payment.entity.js';
 
 @Entity('students')
 export class Student {
@@ -45,16 +40,4 @@ export class Student {
 
   @UpdateDateColumn()
   updated_at: Date;
-
-  @OneToMany(() => Enrollment, (enrollment) => enrollment.student)
-  enrollments: Enrollment[];
-
-  @OneToMany(() => LessonProgress, (lesson_progress) => lesson_progress.student)
-  lesson_progress: LessonProgress[];
-
-  @OneToMany(() => Subscription, (subscription) => subscription.student)
-  subscriptions: Subscription[];
-
-  @OneToMany(() => Payment, (payment) => payment.student)
-  payments: Payment[];
 }

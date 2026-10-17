@@ -1,26 +1,67 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto.js';
 import { UpdateStudentDto } from './dto/update-student.dto.js';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Student } from './entities/student.entity.js';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class StudentsService {
-  create(createStudentDto: CreateStudentDto) {
-    return 'This action adds a new student';
+  constructor(
+    @InjectRepository(Student)
+    private readonly studentRepository: Repository<Student>,
+  ) {}
+
+  async create(createStudentDto: CreateStudentDto) {
+    const hashedPassword = await bcrypt.hash(createStudentDto.password, 10);
+
+    const student = this.studentRepository.create({
+      ...createStudentDto,
+      password: hashedPassword,
+    });
+
+    return this.studentRepository.save(student);
   }
 
   findAll() {
-    return `This action returns all students`;
+    return this.studentRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} student`;
+  async findOne(id: string) {
+    const student = await this.studentRepository.findOne({
+      where: { id },
+    });
+
+    if (!student) {
+      throw new NotFoundException(`Student with ID ${id} not found`);
+    }
+
+    return student;
   }
 
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
+  async update(id: string, updateStudentDto: UpdateStudentDto) {
+    const student = await this.findOne(id);
+
+    if (updateStudentDto.password) {
+      updateStudentDto.password = await bcrypt.hash(
+        updateStudentDto.password,
+        10,
+      );
+    }
+
+    Object.assign(student, updateStudentDto);
+
+    return this.studentRepository.save(student);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} student`;
+  async remove(id: string) {
+    const student = await this.findOne(id);
+
+    await this.studentRepository.remove(student);
+
+    return {
+      message: 'Student deleted Successfully',
+    };
   }
 }
