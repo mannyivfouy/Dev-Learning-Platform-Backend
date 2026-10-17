@@ -43,7 +43,4 @@ export class Plan {
 
   @UpdateDateColumn()
   updated_at: Date;
-
-  @OneToMany(() => Subscription, (subscription) => subscription.plan)
-  subscriptions: Subscription[];
 }

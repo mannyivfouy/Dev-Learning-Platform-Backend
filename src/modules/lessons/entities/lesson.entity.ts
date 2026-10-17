@@ -44,12 +44,9 @@ export class Lesson {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Course, (course) => course.lessons, {
+  @ManyToOne(() => Course, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'course_id' })
   course: Course;
-
-  @OneToMany(() => LessonProgress, (lesson_progress) => lesson_progress.lesson)
-  lesson_progress: LessonProgress[];
 }

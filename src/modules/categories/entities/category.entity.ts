@@ -24,7 +24,4 @@ export class Category {
 
   @UpdateDateColumn()
   updated: Date;
-
-  @OneToMany(() => Course, (course) => course.category)
-  courses: Course[]
 }

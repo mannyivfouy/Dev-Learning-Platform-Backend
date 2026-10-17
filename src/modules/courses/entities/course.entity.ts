@@ -48,15 +48,9 @@ export class Course {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => Category, (category) => category.courses, {
+  @ManyToOne(() => Category, {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'category_id' })
   category: Category;
-
-  @OneToMany(() => Lesson, (lesson) => lesson.course)
-  lessons: Lesson[];
-
-  @OneToMany(() => Enrollment, (enrollment) => enrollment.course)
-  enrollments: Enrollment[];
 }

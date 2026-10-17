@@ -61,10 +61,7 @@ export class Subscription {
   @JoinColumn({ name: 'student_id' })
   student: Student;
 
-  @ManyToOne(() => Plan, (plan) => plan.subscriptions)
+  @ManyToOne(() => Plan)
   @JoinColumn({ name: 'plan_id' })
   plan: Plan;
-
-  @OneToMany(() => Payment, (payment) => payment.subscription)
-  payments: Payment[];
 }

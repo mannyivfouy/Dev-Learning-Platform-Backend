@@ -37,7 +37,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     UsersModule,
     RolesModule,
-    StudentsModule
+    StudentsModule,
+    CategoriesModule,
+    CoursesModule,
+    LessonsModule,
+    LessonProgressModule,
+    EnrollmentsModule,
+    PlansModule,
+    SubscriptionsModule,
+    PaymentsModule
   ],
   controllers: [AppController],
   providers: [AppService],
