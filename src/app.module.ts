@@ -16,6 +16,7 @@ import { PaymentsModule } from './modules/payments/payments.module.js';
 import appConfig from './config/app.config.js';
 import databaseConfig from './config/database.config.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './modules/auth/auth.module.js';
 
 @Module({
   imports: [
@@ -45,7 +46,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     EnrollmentsModule,
     PlansModule,
     SubscriptionsModule,
-    PaymentsModule
+    PaymentsModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -68,4 +68,11 @@ export class UsersService {
       message: 'User deleted Successfully',
     };
   }
+
+  async findByIdentifier(identifier: string) {
+    return this.userRepository.findOne({
+      where: [{ username: identifier }, { email: identifier }],
+      relations: { role: true },
+    });
+  }
 }
