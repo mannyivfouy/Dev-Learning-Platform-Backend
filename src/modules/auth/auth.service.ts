@@ -1,9 +1,14 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service.js';
 import { StudentsService } from '../students/students.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { RegisterDto } from './dto/register.dto.js';
 
 @Injectable()
 export class AuthService {
@@ -72,6 +77,53 @@ export class AuthService {
     return {
       access_token: accessToken,
       account: userData,
+    };
+  }
+
+  async register(registerDto: RegisterDto) {
+    const existingUsername = await this.studentService.findByUsername(
+      registerDto.username,
+    );
+
+    if (existingUsername) {
+      throw new ConflictException('Username already exists');
+    }
+
+    const existingEmail = await this.studentService.findByEmail(
+      registerDto.email,
+    );
+
+    if (existingEmail) {
+      throw new ConflictException('Email already exists');
+    }
+
+    const existingPhone = await this.studentService.findByPhone(
+      registerDto.phone,
+    );
+
+    if (existingPhone) {
+      throw new ConflictException('Phone already exists');
+    }
+
+    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
+
+    const student = await this.studentService.create({
+      ...registerDto,
+      password: hashedPassword,
+    });
+
+    const { password, ...studentData } = student;
+
+    const payload = {
+      sub: student.id,
+      account_type: 'student',
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    return {
+      access_token: accessToken,
+      account: studentData,
     };
   }
 }
