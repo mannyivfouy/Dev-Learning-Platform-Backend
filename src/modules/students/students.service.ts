@@ -64,4 +64,10 @@ export class StudentsService {
       message: 'Student deleted Successfully',
     };
   }
+
+  async findByIdentifier(identifier: string) {
+    return this.studentRepository.findOne({
+      where: [{ username: identifier }, { email: identifier }],
+    });
+  }
 }
