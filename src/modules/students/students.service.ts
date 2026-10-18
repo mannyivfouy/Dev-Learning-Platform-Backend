@@ -70,4 +70,22 @@ export class StudentsService {
       where: [{ username: identifier }, { email: identifier }],
     });
   }
+
+  async findByUsername(username: string) {
+    return this.studentRepository.findOne({
+      where: { username },
+    });
+  }
+
+  async findByEmail(email: string) {
+    return this.studentRepository.findOne({
+      where: { email },
+    });
+  }
+
+  async findByPhone(phone: string) {
+    return this.studentRepository.findOne({
+      where: { phone },
+    });
+  }
 }
