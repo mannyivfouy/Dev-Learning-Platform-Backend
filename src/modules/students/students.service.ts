@@ -65,9 +65,9 @@ export class StudentsService {
     };
   }
 
-  async findByEmail(email: string) {
+  async findByIdentifier(identifier: string) {
     return this.studentRepository.findOne({
-      where: { email },
+      where: [{ username: identifier }, { email: identifier }],
     });
   }
 }

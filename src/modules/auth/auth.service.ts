@@ -3,71 +3,75 @@ import { UsersService } from '../users/users.service.js';
 import { StudentsService } from '../students/students.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UsersService,
     private readonly studentService: StudentsService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async login(loginDto: LoginDto) {
-    const { identifier, password } = loginDto;
+  async studentLogin(loginDto: LoginDto) {
+    const student = await this.studentService.findByIdentifier(
+      loginDto.identifier,
+    );
 
-    const isEmail = identifier.includes('@');
-
-    // Username can ONLY belong to User (admin/staff)
-    if (!isEmail) {
-      const user = await this.userService.findByIdentifier(identifier);
-
-      if (!user) {
-        throw new UnauthorizedException('Invalid Credentials');
-      }
-
-      const passwordMatched = await bcrypt.compare(password, user.password);
-
-      if (!passwordMatched) {
-        throw new UnauthorizedException('Invalid Credentials');
-      }
-
-      return {
-        account_type: 'user',
-        account: user,
-      };
+    if (!student) {
+      throw new UnauthorizedException('Invalid Credentials');
     }
 
-    // Email: check User
-    const user = await this.userService.findByIdentifier(identifier);
+    const passwordMatched = await bcrypt.compare(
+      loginDto.password,
+      student.password,
+    );
 
-    if (user) {
-      const passwordMatched = await bcrypt.compare(password, user.password);
-
-      if (!passwordMatched) {
-        throw new UnauthorizedException('Invalid Credentials');
-      }
-
-      return {
-        account_type: 'user',
-        account: user,
-      };
+    if (!passwordMatched) {
+      throw new UnauthorizedException('Invalid Credentials');
     }
 
-    // Email: check Student
-    const student = await this.studentService.findByEmail(identifier);
+    const payload = {
+      sub: student.id,
+      account_type: 'student',
+    };
 
-    if (student) {
-      const passwordMatched = await bcrypt.compare(password, student.password);
+    const accessToken = await this.jwtService.signAsync(payload);
+    const { password, ...studentData } = student;
 
-      if (!passwordMatched) {
-        throw new UnauthorizedException('Invalid Credentials');
-      }
+    return {
+      access_token: accessToken,
+      account: studentData,
+    };
+  }
 
-      return {
-        account_type: 'student',
-        account: student,
-      };
+  async adminLogin(loginDto: LoginDto) {
+    const user = await this.userService.findByIdentifier(loginDto.identifier);
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid Credentials');
     }
 
-    throw new UnauthorizedException('Invalid Credentials');
+    const passwordMatched = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+
+    if (!passwordMatched) {
+      throw new UnauthorizedException('Invalid Credentials');
+    }
+
+    const payload = {
+      sub: user.id,
+      account_type: 'user',
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload);
+    const { password, ...userData } = user;
+
+    return {
+      access_token: accessToken,
+      account: userData,
+    };
   }
 }

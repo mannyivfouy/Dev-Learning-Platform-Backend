@@ -7,7 +7,12 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  studentLogin(@Body() loginDto: LoginDto) {
+    return this.authService.studentLogin(loginDto);
+  }
+
+  @Post('admin/login')
+  adminLogin(@Body() loginDto: LoginDto) {
+    return this.authService.adminLogin(loginDto);
   }
 }
