@@ -19,16 +19,16 @@ export class LessonProgressController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.lessonProgressService.findOne(+id);
+    return this.lessonProgressService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLessonProgressDto: UpdateLessonProgressDto) {
-    return this.lessonProgressService.update(+id, updateLessonProgressDto);
+    return this.lessonProgressService.update(id, updateLessonProgressDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.lessonProgressService.remove(+id);
+    return this.lessonProgressService.remove(id);
   }
 }

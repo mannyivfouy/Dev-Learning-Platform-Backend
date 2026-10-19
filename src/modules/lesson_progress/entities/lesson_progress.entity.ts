@@ -5,12 +5,14 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { Student } from '../../students/entities/student.entity.js';
 import { Lesson } from '../../lessons/entities/lesson.entity.js';
 
 @Entity('lesson_progress')
+@Unique(['student_id', 'lesson_id'])
 export class LessonProgress {
   @PrimaryGeneratedColumn('uuid')
   id: string;
