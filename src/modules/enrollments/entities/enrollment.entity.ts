@@ -4,15 +4,15 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { Student } from '../../students/entities/student.entity.js';
 import { Course } from '../../courses/entities/course.entity.js';
-import { Payment } from '../../payments/entities/payment.entity.js';
 
 @Entity('enrollments')
+@Unique(['student_id', 'course_id'])
 export class Enrollment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
