@@ -4,14 +4,15 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { Course } from '../../courses/entities/course.entity.js';
-import { LessonProgress } from '../../lesson_progress/entities/lesson_progress.entity.js';
 
 @Entity('lessons')
+@Unique(['course_id', 'lesson_order'])
+@Unique(['course_id', 'slug'])
 export class Lesson {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -22,7 +23,7 @@ export class Lesson {
   @Column({ type: 'varchar', length: 100 })
   title: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100})
   slug: string;
 
   @Column({ type: 'text' })
