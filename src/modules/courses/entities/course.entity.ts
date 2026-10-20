@@ -37,6 +37,19 @@ export class Course {
 
   @Column({
     type: 'enum',
+    enum: ['beginner', 'intermediate', 'advanced'],
+    default: 'beginner',
+  })
+  level: 'beginner' | 'intermediate' | 'advanced';
+
+  @Column({
+    type: 'integer',
+    nullable: true,
+  })
+  duration: number | null;
+
+  @Column({
+    type: 'enum',
     enum: ['draft', 'published', 'archived'],
     default: 'draft',
   })
