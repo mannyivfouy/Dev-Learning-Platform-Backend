@@ -1,4 +1,6 @@
 import {
+  IsEnum,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -35,4 +37,12 @@ export class CreateCourseDto {
   @IsNumber()
   @Min(0)
   price: number;
+
+  @IsEnum(['beginner', 'intermediate', 'advanced'])
+  level: 'beginner' | 'intermediate' | 'advanced';
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  duration?: number;
 }
