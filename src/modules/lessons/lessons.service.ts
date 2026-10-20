@@ -143,4 +143,15 @@ export class LessonsService {
       message: 'Lesson deleted successfully',
     };
   }
+
+  async findByCourse(courseId: string) {
+    return this.lessonRepository.find({
+      where: {
+        course_id: courseId,
+      },
+      order: {
+        lesson_order: 'ASC',
+      },
+    });
+  }
 }
