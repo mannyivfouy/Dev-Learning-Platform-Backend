@@ -105,12 +105,7 @@ export class AuthService {
       throw new ConflictException('Phone already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-
-    const student = await this.studentService.create({
-      ...registerDto,
-      password: hashedPassword,
-    });
+    const student = await this.studentService.create(registerDto);
 
     const { password, ...studentData } = student;
 
