@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -9,6 +10,7 @@ import { Not, Repository } from 'typeorm';
 import { Lesson } from './entities/lesson.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from '../courses/entities/course.entity.js';
+import { EnrollmentsService } from '../enrollments/enrollments.service.js';
 
 @Injectable()
 export class LessonsService {
@@ -18,6 +20,8 @@ export class LessonsService {
 
     @InjectRepository(Course)
     private readonly courseRepository: Repository<Course>,
+
+    private readonly enrollmentsService: EnrollmentsService,
   ) {}
 
   async create(createLessonDto: CreateLessonDto) {
@@ -77,6 +81,30 @@ export class LessonsService {
 
     if (!lesson) {
       throw new NotFoundException('Lesson not found');
+    }
+
+    return lesson;
+  }
+
+  async findOneForStudent(id: string, studentId: string) {
+    const lesson = await this.lessonRepository.findOne({
+      where: { id },
+      relations: {
+        course: true,
+      },
+    });
+
+    if (!lesson) {
+      throw new NotFoundException('Lesson not found');
+    }
+
+    const hasAccess = await this.enrollmentsService.hasActiveAccess(
+      studentId,
+      lesson.course_id,
+    );
+
+    if (!hasAccess) {
+      throw new ForbiddenException('You do not have access to this course');
     }
 
     return lesson;

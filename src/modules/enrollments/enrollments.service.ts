@@ -115,4 +115,24 @@ export class EnrollmentsService {
       message: 'Enrollment deleted successfully',
     };
   }
+
+  async hasActiveAccess(studentId: string, courseId: string): Promise<boolean> {
+    const enrollment = await this.enrollmentRepository.findOne({
+      where: {
+        student_id: studentId,
+        course_id: courseId,
+        status: 'active',
+      },
+    });
+
+    if (!enrollment) {
+      return false;
+    }
+
+    if (enrollment.expires_at && enrollment.expires_at <= new Date()) {
+      return false;
+    }
+
+    return true;
+  }
 }
