@@ -1,7 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { EnrollmentsService } from './enrollments.service.js';
 import { CreateEnrollmentDto } from './dto/create-enrollment.dto.js';
 import { UpdateEnrollmentDto } from './dto/update-enrollment.dto.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard.js';
 
 @Controller('enrollments')
 export class EnrollmentsController {
@@ -17,13 +28,22 @@ export class EnrollmentsController {
     return this.enrollmentsService.findAll();
   }
 
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  findMyEnrollments(@Request() request: any) {
+    return this.enrollmentsService.findMyEnrollments(request.user.sub);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.enrollmentsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEnrollmentDto: UpdateEnrollmentDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateEnrollmentDto: UpdateEnrollmentDto,
+  ) {
     return this.enrollmentsService.update(id, updateEnrollmentDto);
   }
 
