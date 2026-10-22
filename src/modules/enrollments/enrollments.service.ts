@@ -75,6 +75,21 @@ export class EnrollmentsService {
     });
   }
 
+  async findMyEnrollments(studentId: string) {
+    return this.enrollmentRepository.find({
+      where: {
+        student_id: studentId,
+        status: 'active',
+      },
+      relations: {
+        course: true,
+      },
+      order: {
+        created_at: 'DESC',
+      },
+    });
+  }
+
   async findOne(id: string) {
     const enrollment = await this.enrollmentRepository.findOne({
       where: { id },

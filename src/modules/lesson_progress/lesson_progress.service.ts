@@ -89,6 +89,63 @@ export class LessonProgressService {
     });
   }
 
+  async findMyProgress(studentId: string) {
+    return this.lessonProgressRepository.find({
+      where: {
+        student_id: studentId,
+      },
+      relations: {
+        lesson: true,
+      },
+      order: {
+        created_at: 'DESC',
+      },
+    });
+  }
+
+  async completeLesson(studentId: string, lessonId: string) {
+    const lesson = await this.lessonRepository.findOne({
+      where: { id: lessonId },
+    });
+
+    if (!lesson) {
+      throw new NotFoundException('Lesson not found');
+    }
+
+    const enrollment = await this.enrollmentRepository.findOne({
+      where: {
+        student_id: studentId,
+        course_id: lesson.course_id,
+        status: 'active',
+      },
+    });
+
+    if (!enrollment) {
+      throw new ForbiddenException('Student is not enrolled in this course');
+    }
+
+    let lessonProgress = await this.lessonProgressRepository.findOne({
+      where: {
+        student_id: studentId,
+        lesson_id: lessonId,
+      },
+    });
+
+    if (!lessonProgress) {
+      lessonProgress = this.lessonProgressRepository.create({
+        student_id: studentId,
+        lesson_id: lessonId,
+        is_complete: true,
+        completed_at: new Date(),
+      });
+    } else {
+      lessonProgress.is_complete = true;
+      lessonProgress.completed_at = new Date();
+    }
+
+    return this.lessonProgressRepository.save(lessonProgress);
+  }
+
   async findOne(id: string) {
     const lessonProgress = await this.lessonProgressRepository.findOne({
       where: { id },

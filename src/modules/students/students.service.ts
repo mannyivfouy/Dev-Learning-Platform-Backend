@@ -40,6 +40,45 @@ export class StudentsService {
     return student;
   }
 
+  async findMe(studentId: string) {
+    const student = await this.studentRepository.findOne({
+      where: { id: studentId },
+      select: {
+        id: true,
+        fullname: true,
+        username: true,
+        email: true,
+        phone: true,
+        avatar: true,
+        status: true,
+        last_login_at: true,
+        created_at: true,
+        updated_at: true,
+      },
+    });
+
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+
+    return student;
+  }
+
+  async updateProfile(studentId: string, updateStudentDto: UpdateStudentDto) {
+    const student = await this.findOne(studentId);
+
+    if (updateStudentDto.password) {
+      updateStudentDto.password = await bcrypt.hash(
+        updateStudentDto.password,
+        10,
+      );
+    }
+
+    Object.assign(student, updateStudentDto);
+
+    return this.studentRepository.save(student);
+  }
+
   async update(id: string, updateStudentDto: UpdateStudentDto) {
     const student = await this.findOne(id);
 
