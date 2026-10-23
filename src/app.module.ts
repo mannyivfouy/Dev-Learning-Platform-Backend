@@ -17,6 +17,7 @@ import appConfig from './config/app.config.js';
 import databaseConfig from './config/database.config.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module.js';
+import { CloudinaryModule } from './common/cloudinary/cloudinary.module.js';
 
 @Module({
   imports: [
@@ -47,7 +48,8 @@ import { AuthModule } from './modules/auth/auth.module.js';
     PlansModule,
     SubscriptionsModule,
     PaymentsModule,
-    AuthModule
+    AuthModule,
+    CloudinaryModule
   ],
   controllers: [AppController],
   providers: [AppService],
