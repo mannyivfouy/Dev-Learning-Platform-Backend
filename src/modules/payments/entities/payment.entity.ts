@@ -5,8 +5,8 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  ManyToOne
 } from 'typeorm';
-import { ManyToOne } from 'typeorm/browser';
 import { Student } from '../../students/entities/student.entity.js';
 import { Subscription } from '../../subscriptions/entities/subscription.entity.js';
 import { Enrollment } from '../../enrollments/entities/enrollment.entity.js';

@@ -4,13 +4,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Student } from '../../students/entities/student.entity.js';
 import { Plan } from '../../plans/entities/plan.entity.js';
-import { Payment } from '../../payments/entities/payment.entity.js';
 
 @Entity('subscriptions')
 export class Subscription {
@@ -41,6 +39,9 @@ export class Subscription {
     default: 'pending',
   })
   status: 'pending' | 'active' | 'past_due' | 'cancelled' | 'expired';
+
+  @Column({ type: 'boolean', default: false })
+  cancel_at_period_end: boolean;
 
   @Column({ type: 'timestamp' })
   start_date: Date;
