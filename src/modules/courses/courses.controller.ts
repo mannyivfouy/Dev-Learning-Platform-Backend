@@ -1,7 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { CoursesService } from './courses.service.js';
 import { CreateCourseDto } from './dto/create-course.dto.js';
 import { UpdateCourseDto } from './dto/update-course.dto.js';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('courses')
 export class CoursesController {
@@ -20,6 +31,15 @@ export class CoursesController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.coursesService.findOne(id);
+  }
+
+  @Patch(':id/thumbnail')
+  @UseInterceptors(FileInterceptor('thumbnail'))
+  updateThumbnail(
+    @Param('id') id: string,
+    @UploadedFile() file: { buffer: Buffer },
+  ) {
+    return this.coursesService.updateThumbnail(id, file);
   }
 
   @Patch(':id')

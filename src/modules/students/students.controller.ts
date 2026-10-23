@@ -8,11 +8,14 @@ import {
   Delete,
   UseGuards,
   Request,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { StudentsService } from './students.service.js';
 import { CreateStudentDto } from './dto/create-student.dto.js';
 import { UpdateStudentDto } from './dto/update-student.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard.js';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('students')
 export class StudentsController {
@@ -44,6 +47,16 @@ export class StudentsController {
       request.user.sub,
       updateStudentDto,
     );
+  }
+
+  @Patch('profile/avatar')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('avatar'))
+  updateAvatar(
+    @Request() request: any,
+    @UploadedFile() file: { buffer: Buffer },
+  ) {
+    return this.studentsService.updateAvatar(request.user.sub, file);
   }
 
   @Get(':id')

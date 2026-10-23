@@ -5,12 +5,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity.js';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { CloudinaryService } from '../../common/cloudinary/cloudinary.service.js';
 
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
+
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createStudentDto: CreateStudentDto) {
@@ -75,6 +78,20 @@ export class StudentsService {
     }
 
     Object.assign(student, updateStudentDto);
+
+    return this.studentRepository.save(student);
+  }
+
+  async updateAvatar(studentId: string, file: { buffer: Buffer }) {
+    const student = await this.findOne(studentId);
+
+    const result = await this.cloudinaryService.uploadImage(file, 'avatars');
+
+    const uploadResult = result as {
+      secure_url: string;
+    };
+
+    student.avatar = uploadResult.secure_url;
 
     return this.studentRepository.save(student);
   }

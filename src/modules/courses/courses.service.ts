@@ -6,6 +6,7 @@ import { Course } from './entities/course.entity.js';
 import { Repository } from 'typeorm';
 import { Category } from '../categories/entities/category.entity.js';
 import { Lesson } from '../lessons/entities/lesson.entity.js';
+import { CloudinaryService } from '../../common/cloudinary/cloudinary.service.js';
 
 @Injectable()
 export class CoursesService {
@@ -18,6 +19,8 @@ export class CoursesService {
 
     @InjectRepository(Lesson)
     private readonly lessonRepository: Repository<Lesson>,
+
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createCourseDto: CreateCourseDto) {
@@ -76,6 +79,23 @@ export class CoursesService {
     }
 
     return course;
+  }
+
+  async updateThumbnail(id: string, file: { buffer: Buffer }) {
+    const course = await this.findOne(id);
+
+    const result = await this.cloudinaryService.uploadImage(
+      file,
+      'course-thumbnails',
+    );
+
+    const uploadResult = result as {
+      secure_url: string;
+    };
+
+    course.thumbnail = uploadResult.secure_url;
+
+    return this.courseRepository.save(course);
   }
 
   async update(id: string, updateCourseDto: UpdateCourseDto) {
