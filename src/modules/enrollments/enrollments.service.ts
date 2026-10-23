@@ -10,6 +10,7 @@ import { Enrollment } from './entities/enrollment.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from '../students/entities/student.entity.js';
 import { Course } from '../courses/entities/course.entity.js';
+import { Lesson } from '../lessons/entities/lesson.entity.js';
 
 @Injectable()
 export class EnrollmentsService {
@@ -22,6 +23,9 @@ export class EnrollmentsService {
 
     @InjectRepository(Course)
     private readonly courseRepository: Repository<Course>,
+
+    @InjectRepository(Lesson)
+    private readonly lessonRepository: Repository<Lesson>,
   ) {}
 
   async create(createEnrollmentDto: CreateEnrollmentDto) {
@@ -76,18 +80,40 @@ export class EnrollmentsService {
   }
 
   async findMyEnrollments(studentId: string) {
-    return this.enrollmentRepository.find({
+    const enrollments = await this.enrollmentRepository.find({
       where: {
         student_id: studentId,
         status: 'active',
       },
       relations: {
-        course: true,
+        course: {
+          category: true,
+        },
       },
       order: {
         created_at: 'DESC',
       },
     });
+
+    const enrollmentsWithLessonCount = await Promise.all(
+      enrollments.map(async (enrollment) => {
+        const lessonCount = await this.lessonRepository.count({
+          where: {
+            course_id: enrollment.course_id,
+          },
+        });
+
+        return {
+          ...enrollment,
+          course: {
+            ...enrollment.course,
+            lesson_count: lessonCount,
+          },
+        };
+      }),
+    );
+
+    return enrollmentsWithLessonCount;
   }
 
   async findOne(id: string) {
