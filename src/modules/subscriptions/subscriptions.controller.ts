@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { SubscriptionsService } from './subscriptions.service.js';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto.js';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard.js';
 
 @Controller('subscriptions')
 export class SubscriptionsController {
@@ -15,6 +16,14 @@ export class SubscriptionsController {
   @Get()
   findAll() {
     return this.subscriptionsService.findAll();
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  findMySubscription(@Request() request: any) {
+    return this.subscriptionsService.findMySubscription(
+      request.user.sub,
+    );
   }
 
   @Get(':id')
