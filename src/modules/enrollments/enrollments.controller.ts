@@ -34,6 +34,12 @@ export class EnrollmentsController {
     return this.enrollmentsService.findMyEnrollments(request.user.sub);
   }
 
+  @Get('my-learning')
+  @UseGuards(JwtAuthGuard)
+  findMyLearning(@Request() request: any) {
+    return this.enrollmentsService.findMyLearning(request.user.sub);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.enrollmentsService.findOne(id);

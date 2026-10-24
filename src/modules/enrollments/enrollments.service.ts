@@ -120,6 +120,41 @@ export class EnrollmentsService {
     return enrollmentsWithLessonCount;
   }
 
+  // NEW
+  async findMyLearning(studentId: string) {
+    const courses = await this.courseRepository.find({
+      relations: {
+        category: true,
+      },
+      order: {
+        created_at: 'DESC',
+      },
+    });
+
+    const accessibleCourses = await Promise.all(
+      courses.map(async (course) => {
+        const hasAccess = await this.hasActiveAccess(studentId, course.id);
+
+        if (!hasAccess) {
+          return null;
+        }
+
+        const lessonCount = await this.lessonRepository.count({
+          where: {
+            course_id: course.id,
+          },
+        });
+
+        return {
+          course,
+          lesson_count: lessonCount,
+        };
+      }),
+    );
+
+    return accessibleCourses.filter((course) => course !== null);
+  }
+
   async findOne(id: string) {
     const enrollment = await this.enrollmentRepository.findOne({
       where: { id },
