@@ -6,9 +6,10 @@ import { Enrollment } from './entities/enrollment.entity.js';
 import { Student } from '../students/entities/student.entity.js';
 import { Course } from '../courses/entities/course.entity.js';
 import { Lesson } from '../lessons/entities/lesson.entity.js';
+import { Subscription } from '../subscriptions/entities/subscription.entity.js';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Enrollment, Student, Course, Lesson])],
+  imports: [TypeOrmModule.forFeature([Enrollment, Student, Course, Lesson, Subscription])],
   controllers: [EnrollmentsController],
   providers: [EnrollmentsService],
   exports: [EnrollmentsService],
