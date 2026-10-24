@@ -4,7 +4,9 @@ import { ConfigService } from '@nestjs/config';
 import { ResponseInterceptor } from './common/interceptors/response.interceptors.js';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    rawBody: true,
+  });
   app.enableCors({
     origin: 'http://localhost:4200',
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
