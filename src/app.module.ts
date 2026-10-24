@@ -49,7 +49,7 @@ import { CloudinaryModule } from './common/cloudinary/cloudinary.module.js';
     SubscriptionsModule,
     PaymentsModule,
     AuthModule,
-    CloudinaryModule
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

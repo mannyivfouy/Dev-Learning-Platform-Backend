@@ -1,7 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { PaymentsService } from './payments.service.js';
 import { CreatePaymentDto } from './dto/create-payment.dto.js';
 import { UpdatePaymentDto } from './dto/update-payment.dto.js';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard.js';
 
 @Controller('payments')
 export class PaymentsController {
@@ -10,6 +21,20 @@ export class PaymentsController {
   @Post()
   create(@Body() createPaymentDto: CreatePaymentDto) {
     return this.paymentsService.create(createPaymentDto);
+  }
+
+  @Post('checkout/course/:courseId')
+  @UseGuards(JwtAuthGuard)
+  createCourseCheckout(@Param('courseId') courseId: string, @Req() req: any) {
+    const studentId = req.user.sub;
+
+    return this.paymentsService.createCourseCheckout(courseId, studentId);
+  }
+
+  // NEW
+  @Post('webhook')
+  handleWebhook(@Req() req: any) {
+    return this.paymentsService.handleWebhook(req);
   }
 
   @Get()
