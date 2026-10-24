@@ -11,6 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from '../students/entities/student.entity.js';
 import { Course } from '../courses/entities/course.entity.js';
 import { Lesson } from '../lessons/entities/lesson.entity.js';
+import { Subscription } from '../subscriptions/entities/subscription.entity.js';
 
 @Injectable()
 export class EnrollmentsService {
@@ -26,6 +27,9 @@ export class EnrollmentsService {
 
     @InjectRepository(Lesson)
     private readonly lessonRepository: Repository<Lesson>,
+
+    @InjectRepository(Subscription)
+    private readonly subscriptionRepository: Repository<Subscription>,
   ) {}
 
   async create(createEnrollmentDto: CreateEnrollmentDto) {
@@ -157,6 +161,7 @@ export class EnrollmentsService {
     };
   }
 
+  // CHANGED
   async hasActiveAccess(studentId: string, courseId: string): Promise<boolean> {
     const enrollment = await this.enrollmentRepository.findOne({
       where: {
@@ -166,14 +171,25 @@ export class EnrollmentsService {
       },
     });
 
-    if (!enrollment) {
-      return false;
+    if (enrollment) {
+      if (!enrollment.expires_at || enrollment.expires_at > new Date()) {
+        return true;
+      }
     }
 
-    if (enrollment.expires_at && enrollment.expires_at <= new Date()) {
-      return false;
+    const subscription = await this.subscriptionRepository.findOne({
+      where: {
+        student_id: studentId,
+        status: 'active',
+      },
+    });
+
+    if (subscription) {
+      if (!subscription.end_date || subscription.end_date > new Date()) {
+        return true;
+      }
     }
 
-    return true;
+    return false;
   }
 }
