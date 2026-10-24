@@ -31,6 +31,22 @@ export class PaymentsController {
     return this.paymentsService.createCourseCheckout(courseId, studentId);
   }
 
+  @Post('checkout/subscription')
+  @UseGuards(JwtAuthGuard)
+  createSubscriptionCheckout(@Req() req: any) {
+    const studentId = req.user.sub;
+
+    return this.paymentsService.createSubscriptionCheckout(studentId);
+  }
+
+  @Post('subscription/cancel')
+@UseGuards(JwtAuthGuard)
+cancelSubscription(@Req() req: any) {
+  const studentId = req.user.sub;
+
+  return this.paymentsService.cancelSubscription(studentId);
+}
+
   // NEW
   @Post('webhook')
   handleWebhook(@Req() req: any) {
