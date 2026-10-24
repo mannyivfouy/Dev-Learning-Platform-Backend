@@ -31,6 +31,9 @@ export class Plan {
   })
   billing_cycle: 'monthly' | 'yearly';
 
+  @Column({ type: 'varchar', length: 255, unique: true })
+  stripe_price_id: string;
+
   @Column({
     type: 'enum',
     enum: ['active', 'inactive'],

@@ -6,14 +6,16 @@ import { Payment } from './entities/payment.entity.js';
 import { Course } from '../courses/entities/course.entity.js';
 import { Subscription } from '../subscriptions/entities/subscription.entity.js';
 import { Enrollment } from '../enrollments/entities/enrollment.entity.js';
-import { Student } from '../students/entities/student.entity.js';
+import { Plan } from '../plans/entities/plan.entity.js';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Payment,
       Course,
-      Enrollment
+      Enrollment,
+      Plan,
+      Subscription
     ]),
   ],
   controllers: [PaymentsController],
